@@ -8,7 +8,7 @@ Get Current Time
 * -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 [insert_command]
-lioranboardclient.send('{"type":"MESSAGE","topic":"ExtensionCommand","name":"Get Current Time","boxcount":2,"boxname1":"variable","boxtype1":"string","boxname2":"format|time_12h|time_24h|time_military|date|timestamp|unix|month|week_of_year|","boxtype2":"string"}');
+lioranboardclient.send('{"type":"MESSAGE","topic":"ExtensionCommand","name":"Get Current Time","boxcount":2,"boxname1":"variable","boxtype1":"string","boxname2":"format|time_12h|time_24h|day|fullday|month|fullmonth|year|time_military|date(MM/DD/YYYY)|date(YYYY-MM-DD)|timestamp|unix|","boxtype2":"string"}');
 [insert_hook]
 case "GetCurrentTime":{
 	LBGetTime(LioranBoardJSON.variable, LioranBoardJSON.format)
@@ -25,8 +25,11 @@ function LBGetTime (variable,format){
 	case "timestamp": 
 	result=moment().format('MM/DD/YYYY h:mm A')
 	break;
-	case "date":
+	case "date(MM/DD/YYYY)":
 	result=moment().format('MM/DD/YYYY')
+	break;
+	case "date(YYYY-MM-DD)":
+	result=moment().format('YYYY-MM-DD')
 	break;
 	case "time_24h": 
 	result=moment().format('HH:mm')
@@ -37,12 +40,20 @@ function LBGetTime (variable,format){
 	case "time_military": 
 	result=moment().format('HHmmss')
 	break;
-	case "month": 
-	result=moment().format('MMM')
+	case "day": 
+	result=moment().format('DD')
 	break;
-	case "week_of_year": 
-	result=moment().format('WW')
-
+	case "fullday": 
+	result=moment().format('dddd')
+	break;
+	case "month": 
+	result=moment().format('MM')
+	break;
+	case "fullmonth": 
+	result=moment().format('MMMM')
+	break;
+	case "year": 
+	result=moment().format('YYYY')
 	}
 	
 	lioranboardclient.send('{"type":"MESSAGE","topic":"SetValue","valuename":"'+variable+'","value":'+JSON.stringify(result)+'}');
